@@ -204,9 +204,9 @@ impl<T: 'static> BufferObject<T> {
         }
 
         unsafe {
-            let mut buffer: *mut ::libc::c_void = ptr::null_mut();
+            let mut ptr: *mut ::libc::c_void = ptr::null_mut();
             let mut stride = 0;
-            let ptr = ::ffi::gbm_bo_map(
+            let buffer = ::ffi::gbm_bo_map(
                 self.ffi,
                 x,
                 y,
@@ -214,7 +214,7 @@ impl<T: 'static> BufferObject<T> {
                 height,
                 ::ffi::gbm_bo_transfer_flags::GBM_BO_TRANSFER_READ as u32,
                 &mut stride as *mut _,
-                &mut buffer as *mut _,
+                &mut ptr as *mut _,
             );
 
             if ptr.is_null() {
@@ -225,7 +225,7 @@ impl<T: 'static> BufferObject<T> {
                     addr: ptr,
                     buffer: slice::from_raw_parts_mut(
                         buffer as *mut _,
-                        ((height * stride + height * width) * 4) as usize,
+                        ((height * stride) * 4) as usize,
                     ),
                     stride,
                     height,
@@ -262,9 +262,9 @@ impl<T: 'static> BufferObject<T> {
         }
 
         unsafe {
-            let mut buffer: *mut ::libc::c_void = ptr::null_mut();
+            let mut ptr: *mut ::libc::c_void = ptr::null_mut();
             let mut stride = 0;
-            let ptr = ::ffi::gbm_bo_map(
+            let buffer = ::ffi::gbm_bo_map(
                 self.ffi,
                 x,
                 y,
@@ -272,7 +272,7 @@ impl<T: 'static> BufferObject<T> {
                 height,
                 ::ffi::gbm_bo_transfer_flags::GBM_BO_TRANSFER_READ_WRITE as u32,
                 &mut stride as *mut _,
-                &mut buffer as *mut _,
+                &mut ptr as *mut _,
             );
 
             if ptr.is_null() {
@@ -283,7 +283,7 @@ impl<T: 'static> BufferObject<T> {
                     addr: ptr,
                     buffer: slice::from_raw_parts_mut(
                         buffer as *mut _,
-                        ((height * stride + height * width) * 4) as usize,
+                        ((height * stride) * 4) as usize,
                     ),
                     stride,
                     height,
